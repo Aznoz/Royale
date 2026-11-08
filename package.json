@@ -1,0 +1,10 @@
+{
+  "name": "arena-vezi-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Server pro hru Aréna věží (Unity klient): HTTP API + WebSocket /arena, bez závislostí.",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}

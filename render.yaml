@@ -1,0 +1,18 @@
+# Render Blueprint – nahraj složku ArenaServer do svého GitHub repozitáře (package.json musí být v kořeni) a v Renderu zvol "New + > Blueprint".
+services:
+  - type: web
+    name: arena-vezi-server
+    runtime: node
+    plan: free                # pro trvalé ukládání účtů přepni na "starter" a odkomentuj disk níže
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: ARENA_SECRET
+        generateValue: true   # podpis záloh postupu – po vygenerování ho NIKDY neměň, jinak se zálohy z telefonů přestanou přijímat
+      # - key: DATA_DIR
+      #   value: /var/data
+    # disk:
+    #   name: arena-data
+    #   mountPath: /var/data
+    #   sizeGB: 1
