@@ -44,9 +44,10 @@ export const CARDS = {
   ram:       { id: 'ram',       name: 'Beranidlo',    icon: '🐏', cost: 4, lvl: 8,  n: 1, hp: 720, dmg: 130, as: 1.5,  speed: 86, range: 18, r: 11, tt: 'building', desc: 'Rychlé beranidlo, které se žene rovnou na věže (a cestou rozbije farmu).' },
   arrows:    { id: 'arrows',    name: 'Déšť šípů',    icon: '🏹', cost: 3, lvl: 1,  kind: 'spell', hp: 0, dmg: 125, splash: 84, tt: 'all', towerMul: 0.35, delay: 0.5, desc: 'Kouzlo: déšť šípů na velké ploše. Ideální na roje. Věže berou jen 35 %.' },
   lightning: { id: 'lightning', name: 'Blesk',        icon: '⚡', cost: 5, lvl: 1,  kind: 'spell', hp: 0, dmg: 480, splash: 26, tt: 'all', towerMul: 0.5, delay: 0.35, desc: 'Kouzlo: silný blesk na malou plochu. Smaže jednu těžkou jednotku nebo osekne věž.' },
+  mega:      { id: 'mega',      name: 'M.E.G.A.',     icon: '🤖', cost: 8, lvl: 13, n: 1, hp: 3600, dmg: 560, as: 2.0, speed: 26, range: 24, r: 18, tt: 'ground', desc: 'Sci-fi mech řízený šíleným vědcem. Obrovský, pomalý a drtí cokoliv, co mu stojí v cestě.' },
   farm:      { id: 'farm',      name: 'Elixírová farma', icon: '🧪', cost: 5, lvl: 1, n: 1, hp: 600, dmg: 0, as: 4, speed: 0, range: 0, r: 11, tt: 'ground', kind: 'farm', gen: 1, life: 25, desc: 'Budova: každé 4 s přidá 1 elixír, ale sama chátrá a po 25 s zanikne. Soupeř ji může zničit dřív.' },
 };
-export const CARD_ORDER = ['soldier', 'skeletons', 'skelarmy', 'archer', 'knight', 'bats', 'fireball', 'musketeer', 'wizard', 'golem', 'troll', 'ent', 'farm', 'dragon', 'bomber', 'berserker', 'priest', 'goblins', 'harpy', 'cannon', 'valkyrie', 'sniper', 'ram', 'arrows', 'lightning'];
+export const CARD_ORDER = ['soldier', 'skeletons', 'skelarmy', 'archer', 'knight', 'bats', 'fireball', 'musketeer', 'wizard', 'golem', 'troll', 'ent', 'farm', 'dragon', 'bomber', 'berserker', 'priest', 'goblins', 'harpy', 'cannon', 'valkyrie', 'sniper', 'ram', 'arrows', 'lightning', 'mega'];
 export const STARTER = ['soldier', 'archer', 'knight', 'skeletons', 'fireball', 'golem', 'wizard', 'bats', 'musketeer'];
 
 export const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
