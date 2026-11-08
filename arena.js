@@ -191,7 +191,7 @@ function sendSnaps(room) {
 
 // ------------------------------------------------------------------ průběh zápasu
 function startMatch(room) {
-  const decks = room.players.map((p) => (p.bot ? botDeck(p.bot) : deckOf(p.acc)));
+  const decks = room.players.map((p) => (p.bot ? botDeck(p.bot) : room.sandbox ? room.sbDeck : deckOf(p.acc)));
   const rate = room.players.map((p) => (p.bot ? BOT_RATE[p.bot] : 1));
   room.game = G.newGame(decks, crypto.randomInt(1, 2 ** 31), { rate });
   room.thinkAt = room.players.map((p, i) => (p.bot ? 20 + i * 7 + Math.floor(Math.random() * 20) : 0));
@@ -204,6 +204,7 @@ function finish(room, r) {
   room.phase = 'over';
   const g = room.game; const crowns = g ? [...g.crowns] : [0, 0];
   const out = { winner: r.winner, reason: r.reason, crowns, coins: {}, bonus: {}, streak: {}, xp: {}, noCoins: null, chest: {} };
+  if (room.sandbox) { out.noCoins = 'Sandbox: bez odměn, bez truhly.'; out.sandbox = 1; room.result = out; publish(room); return; }   // sandbox nic neukládá
   const humans = room.players.map((p, i) => ({ p, i })).filter((o) => !o.p.bot && o.p.acc);
   const enough = room.players.every((p, i) => p.bot || (g && g.pl[i].played >= MIN_PLAYS));
   for (const { p, i } of humans) {
@@ -313,6 +314,13 @@ function handle(ws, msg) {
     const lvl = Number(msg.level);
     if (msg.t === 'bot' && BOT_REWARDS[lvl]) {
       room.bot = lvl;
+      if (msg.sandbox) { // sandbox: všechny karty odemčené, vlastní balíček, žádné odměny
+        const seen = new Set(); const ids = [];
+        for (const id of Array.isArray(msg.deck) ? msg.deck : []) if (CARDS[id] && !seen.has(id) && ids.length < C.DECK_SIZE) { seen.add(id); ids.push(id); }
+        for (const id of C.STARTER) if (ids.length < C.DECK_SIZE && !seen.has(id)) { seen.add(id); ids.push(id); }
+        const lv = C.clamp(Math.floor(Number(msg.lv) || 5), 1, C.MAX_CARD_LEVEL);
+        room.sandbox = true; room.sbDeck = ids.map((id) => ({ id, lv }));
+      }
       const human = r.pl;
       const bot = { id: 'bot', name: BOT_NAMES[lvl], token: null, ws: null, connected: true, acc: null, bot: lvl };
       if (Math.random() < 0.5) room.players.unshift(bot); else room.players.push(bot);   // strana je náhodná

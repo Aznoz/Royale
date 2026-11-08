@@ -66,9 +66,10 @@ export function botThink(s, pi, lvl) {
   if (p.elixir < PUSH_AT[lvl] && (lvl < 3 || mine.length || p.elixir < 9)) return null;
   const leaders = mine.filter((u) => u.k !== 'healer' && !u.fly).sort((a, b) => (pi === 0 ? a.y - b.y : b.y - a.y));
   const lead = leaders[0];
-  let choices = units;
-  if (!lead) choices = units.filter((x) => x.c.kind !== 'healer' && x.c.kind !== 'bomber') .length ? units.filter((x) => x.c.kind !== 'healer' && x.c.kind !== 'bomber') : units;
-  else if (lvl >= 2) { const sup = units.filter((x) => x.c.range > 40 || x.c.fly || x.c.kind === 'healer' || x.c.kind === 'bomber'); if (sup.length) choices = sup; }
+  const atk = units.some((x) => x.c.kind !== 'turret') ? units.filter((x) => x.c.kind !== 'turret') : units;   // dělo bot jen brání
+  let choices = atk;
+  if (!lead) choices = atk.filter((x) => x.c.kind !== 'healer' && x.c.kind !== 'bomber').length ? atk.filter((x) => x.c.kind !== 'healer' && x.c.kind !== 'bomber') : atk;
+  else if (lvl >= 2) { const sup = atk.filter((x) => x.c.range > 40 || x.c.fly || x.c.kind === 'healer' || x.c.kind === 'bomber'); if (sup.length) choices = sup; }
   let pick;
   if (lvl >= 3) {   // chytřejší volba: bez jednotek na poli nejdřív tanka, jinak nejlepší poměr cena/výkon
     pick = !lead ? choices.reduce((a, b) => (b.c.hp * (b.c.n || 1) > a.c.hp * (a.c.n || 1) ? b : a)) : choices.reduce((a, b) => (score(b.c) > score(a.c) ? b : a));

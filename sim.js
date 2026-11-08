@@ -128,6 +128,7 @@ function unitAttack(s, u, t) {
 function stepUnit(s, u) {
   if (u.wait > 0) { u.wait -= DT; return; }
   if (u.k === 'farm') return stepFarm(s, u);   // budova: nehýbe se, nebojuje, jen vyrábí elixír
+  if (u.k === 'turret') { hurt(s, u, u.max * DT / u.life, -1); if (u.hp <= 0) return; }   // dělo chátrá a po `life` sekundách zanikne
   if (u.cd > 0) u.cd -= DT;
   if (u.k === 'healer') return stepHealer(s, u);
   // cíl se po prvním úderu zamkne a mění se jen když zemře (předtím se každých 5 tiků hledá nejbližší nepřítel)
@@ -136,7 +137,7 @@ function stepUnit(s, u) {
   const t = u.tgt; if (!t) return;
   const d = dist(u, t) - t.r - (u.k === 'bomber' ? 0 : u.r);
   if (d <= u.range) { if (u.cd <= 0) unitAttack(s, u, t); return; }
-  walk(u, t);
+  if (u.speed > 0) walk(u, t);
 }
 function stepFarm(s, u) {
   if (u.life > 0) hurt(s, u, u.max * DT / u.life, -1);   // budova chátrá a po `life` sekundách zanikne
@@ -178,7 +179,7 @@ function separate(s) { // pozemní jednotky se do sebe nesmějí slít
     if (d2 >= m * m) continue;
     const d = sqrt(d2) || 0.001; const push = (m - d) * SEP_PUSH * 0.5; const nx = d2 < 1e-6 ? 1 : dx / d, ny = d2 < 1e-6 ? 0 : dy / d;
     const wa = a.tgt && a.cd > 0 && dist(a, a.tgt) - a.tgt.r - a.r <= a.range ? 0.3 : 1; const wb = b.tgt && b.cd > 0 && dist(b, b.tgt) - b.tgt.r - b.r <= b.range ? 0.3 : 1;
-    const fa = a.k === 'farm' ? 0 : 1, fb = b.k === 'farm' ? 0 : 1;   // farma je nehybná
+    const fa = a.speed <= 0 ? 0 : 1, fb = b.speed <= 0 ? 0 : 1;   // farma je nehybná
     a.x -= nx * push * wa * fa; a.y -= ny * push * wa * fa; b.x += nx * push * wb * fb; b.y += ny * push * wb * fb;
   }
   for (const u of g) { u.x = C.clamp(u.x, 5, W - 5); if (inBand(u.y)) u.x = C.clamp(u.x, BRIDGE.x0 + 6, BRIDGE.x1 - 6); }
